@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warehouse Inventory Management</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+        }
+        input {
+            margin: 5px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Warehouse Inventory Management System</h1>
+<h3>Add New Product</h3>
+<input type="text" id="productID" placeholder="Product ID">
+<input type="text" id="productName" placeholder="Product Name">
+<input type="number" id="productQuantity" placeholder="Quantity">
+<input type="number" id="productPrice" placeholder="Price per Unit">
+<button onclick="addProduct()">Add Product</button>
+<h3>Update Product Quantity</h3>
+<input type="text" id="updateID" placeholder="Product ID">
+<input type="number" id="updateQuantity" placeholder="New Quantity">
+<button onclick="updateProduct()">Update Quantity</button>
+    <h3>Inventory Details</h3>
+    <button onclick="calculateInventoryValue()">Calculate Total Inventory Value</button>
+    <p id="totalValue"></p>
+    <h3>Product List</h3>
+    <ul id="productList"></ul>
+    <script>
+        let inventory = [];  // Array to store products
+        function addProduct() {// Function to add a new product
+            let id = document.getElementById("productID").value;
+            let name = document.getElementById("productName").value;
+            let quantity = parseInt(document.getElementById("productQuantity").value);
+            let price = parseFloat(document.getElementById("productPrice").value);
+            let product = {// Creating a product object
+                id: id,
+                name: name,
+                quantity: quantity,
+                price: price
+            }; // Adding product to the array
+            inventory.push(product);
+            displayProducts();
+            clearFields();
+        } 
+         function updateProduct() {
+            let id = document.getElementById("updateID").value;
+            let newQuantity = parseInt(document.getElementById("updateQuantity").value);
+
+            for (let i = 0; i < inventory.length; i++) {
+                if (inventory[i].id === id) {
+                    inventory[i].quantity = newQuantity;
+                    displayProducts();
+                    clearFields();
+                    return;
+                }
+            }
+            alert("Product ID not found.");
+        }
+
+        // Function to calculate total inventory value
+        function calculateInventoryValue() {
+            let totalValue = 0;
+            for (let i = 0; i < inventory.length; i++) {
+                totalValue += inventory[i].quantity * inventory[i].price;
+            }
+            document.getElementById("totalValue").innerText = "Total Inventory Value: $" + totalValue.toFixed(2);
+        }
+        // Function to display products
+        function displayProducts() {
+            let productList = document.getElementById("productList");
+            productList.innerHTML = "";
+
+            for (let i = 0; i < inventory.length; i++) {
+                let product = inventory[i];
+                let item = document.createElement("li");
+                item.textContent = `ID: ${product.id}, Name: ${product.name}, Quantity: ${product.quantity}, Price: Rs.${product.price}`;
+                productList.appendChild(item);
+            }
+        }
+        // function to Delete all data
+        function clearFields() {
+            document.getElementById("productID").value = "";
+            document.getElementById("productName").value = "";
+            document.getElementById("productQuantity").value = "";
+            document.getElementById("productPrice").value = "";
+            document.getElementById("updateID").value = "";
+            document.getElementById("updateQuantity").value = "";
+        }
+    </script>
+</body>
+</html>
