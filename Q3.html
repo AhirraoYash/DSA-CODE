@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Data Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #333;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        .output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            padding: 8px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Traffic Data Analysis</h2>
+        <div class="input-group">
+            <input type="number" id="lane" placeholder="Lane Number">
+            <input type="number" id="carCount" placeholder="Car Count">
+            <input type="number" id="speed" placeholder="Speed (km/h)">
+            <input type="time" id="entryTime" placeholder="Entry Time">
+            <input type="time" id="exitTime" placeholder="Exit Time">
+            <button onclick="addTrafficData()">Add Data</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Lane</th>
+                    <th>Car Count</th>
+                    <th>Speed (km/h)</th>
+                    <th>Entry Time</th>
+                    <th>Exit Time</th>
+                </tr>
+            </thead>
+            <tbody id="trafficData">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+        
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        const trafficData = [];
+
+        function addTrafficData() {
+            // Get user inputs
+            const lane = parseInt(document.getElementById("lane").value);
+            const carCount = parseInt(document.getElementById("carCount").value);
+            const speed = parseInt(document.getElementById("speed").value);
+            const entryTime = document.getElementById("entryTime").value;
+            const exitTime = document.getElementById("exitTime").value;
+
+            // Validate inputs
+            if (isNaN(lane) || isNaN(carCount) || isNaN(speed) || !entryTime || !exitTime) {
+                alert("Please fill in all fields correctly.");
+                return;
+            }
+
+            // Add data to array
+            trafficData.push({ lane, carCount, speed, entryTime, exitTime });
+            
+            // Clear input fields
+            document.getElementById("lane").value = '';
+            document.getElementById("carCount").value = '';
+            document.getElementById("speed").value = '';
+            document.getElementById("entryTime").value = '';
+            document.getElementById("exitTime").value = '';
+
+            // Refresh table and analyze data
+            loadTrafficData();
+            analyzeTrafficData();
+        }
+
+        function loadTrafficData() {
+            const tableBody = document.getElementById("trafficData");
+            tableBody.innerHTML = "";
+
+            trafficData.forEach(data => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${data.lane}</td>
+                    <td>${data.carCount}</td>
+                    <td>${data.speed}</td>
+                    <td>${data.entryTime}</td>
+                    <td>${data.exitTime}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function analyzeTrafficData() {
+            if (trafficData.length === 0) {
+                document.getElementById("output").innerText = "No data available for analysis.";
+                return;
+            }
+
+            // Sort data by car count to find peak traffic
+            const sortedData = [...trafficData].sort((a, b) => b.carCount - a.carCount);
+
+            // Find peak car count
+            const peakLaneData = sortedData[0];
+
+            // Aggregate total car count across all lanes
+            const totalCarCount = trafficData.reduce((sum, data) => sum + data.carCount, 0);
+
+            // Display results
+            document.getElementById("output").innerText = `
+                Peak Traffic: Lane ${peakLaneData.lane} with ${peakLaneData.carCount} cars
+                Total Cars across all lanes: ${totalCarCount}
+            `;
+        }
+    </script>
+</body>
+</html>
