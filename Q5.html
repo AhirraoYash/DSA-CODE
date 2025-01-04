@@ -1,0 +1,93 @@
+<html>
+<body>
+<script>
+class SongNode {
+    constructor(title) {
+        this.title = title;
+        this.next = null;
+        this.prev = null;
+    }
+}
+
+class Playlist {
+    constructor() {
+        this.current = null;
+    }
+
+    // Add a song to the playlist
+    addSong(title) {
+        const newSong = new SongNode(title);
+        if (!this.current) {
+            this.current = newSong;
+            newSong.next = newSong;
+            newSong.prev = newSong;
+        } else {
+            const lastSong = this.current.prev;
+
+            lastSong.next = newSong;
+            newSong.prev = lastSong;
+
+            newSong.next = this.current;
+            this.current.prev = newSong;
+        }
+        console.log(`Added song: ${title}`);
+    }
+
+    // Skip to the next song
+    nextSong() {
+        if (this.current) {
+            this.current = this.current.next;
+            console.log(`Playing next song: ${this.current.title}`);
+        }
+    }
+
+    // Replay the current song
+    replaySong() {
+        if (this.current) {
+            console.log(`Replaying current song: ${this.current.title}`);
+        }
+    }
+
+    // Skip to the previous song
+    previousSong() {
+        if (this.current) {
+            this.current = this.current.prev;
+            console.log(`Playing previous song:${this.current.title}`);
+            
+        }
+    }
+
+    // Display the playlist starting from the current song
+    displayPlaylist() {
+        if (!this.current) {
+            console.log("Playlist is empty.");
+            return;
+        }
+
+        let temp = this.current;
+        console.log("Playlist:");
+        do {
+            const isActive = temp === this.current ? "(Currently Playing)" : "";
+            console.log(`- ${temp.title} ${isActive}`);
+            temp = temp.next;
+        } while (temp !== this.current);
+    }
+}
+
+// Example usage
+const playlist = new Playlist();
+playlist.addSong("Song 1");
+playlist.addSong("Song 2");
+playlist.addSong("Song 3");
+playlist.addSong("Song 4");
+
+playlist.displayPlaylist();
+
+playlist.nextSong();    // Go to next song
+playlist.replaySong();  // Replay current song
+playlist.previousSong(); // Go to previous song
+
+ 
+</script>
+</body>
+</html>
