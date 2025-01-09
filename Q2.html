@@ -1,103 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Theater Seating Arrangement</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
+<html>
+    <body>
+        <script>
+        class Station {
+            constructor(name) {
+                this.name = name;
+                this.next = null;
+            }
         }
-        .seat {
-            width: 30px;
-            height: 30px;
-            margin: 2px;
-            text-align: center;
-            line-height: 30px;
-            display: inline-block;
-            color: #fff;
-        }
-        .available {
-            background-color: #4CAF50;
-        }
-        .booked {
-            background-color: #FF5733;
-        }
-        .row {
-            display: flex;
-            justify-content: center;
-        }
-    </style>
-</head>
-<body>
-    <h1>Movie Theater Seating Arrangement</h1>
-    <div id="seatingArea"></div>
-    <h3>Book Seat</h3>
-    <input type="number" id="rowNumber" placeholder="Row Number" min="1">
-    <input type="number" id="seatNumber" placeholder="Seat Number" min="1">
-    <button onclick="bookSeat()">Book Seat</button>
-    <h3>Cancel Booking</h3>
-    <input type="number" id="cancelRow" placeholder="Row Number" min="1">
-    <input type="number" id="cancelSeat" placeholder="Seat Number" min="1">
-    <button onclick="cancelBooking()">Cancel Booking</button>
-    <script>
-        // 2-D array for seating arrangement: 0 means available, 1 means booked
-        const rows = 5;
-        const seatsPerRow = 10;
-        let theater = Array.from({ length: rows }, () => Array(seatsPerRow).fill(0));
-        // Display the seating arrangement
-        function displaySeating() {
-            const seatingArea = document.getElementById("seatingArea");
-            seatingArea.innerHTML = "";
-            for (let i = 0; i < rows; i++) {
-                const rowDiv = document.createElement("div");
-                rowDiv.className = "row";
-                for (let j = 0; j < seatsPerRow; j++) {
-                    const seat = document.createElement("div");
-                    seat.className = "seat " + (theater[i][j] === 1 ? "booked" : "available");
-                    seat.textContent = j + 1;
-                    rowDiv.appendChild(seat);
+        
+        class TrainSystem {
+            constructor() {
+                this.head = null;
+            }
+        
+            addStation(name) {
+                const newStation = new Station(name);
+                if (!this.head) {
+                    this.head = newStation;
+                    this.head.next = this.head; // Circular link
+                } else {
+                    let current = this.head;
+                    while (current.next !== this.head) {
+                        current = current.next;
+                    }
+                    current.next = newStation;
+                    newStation.next = this.head;
                 }
-                seatingArea.appendChild(rowDiv);
+            }
+        
+            removeStation(name) {
+                if (!this.head) {
+                    console.log('No stations to remove.');
+                    return;
+                }
+                
+                let current = this.head;
+                let prev = null;
+        
+                if (this.head.name === name) {
+                    while (current.next !== this.head) {
+                        current = current.next;
+                    }
+                    if (this.head === current) {
+                        this.head = null;
+                    } else {
+                        current.next = this.head.next;
+                        this.head = this.head.next;
+                    }
+                    return;
+                }
+        
+                prev = current;
+                current = current.next;
+        
+                while (current !== this.head) {
+                    if (current.name === name) {
+                        prev.next = current.next;
+                        current = null;
+                        return;
+                    }
+                    prev = current;
+                    current = current.next;
+                }
+                console.log('Station not found.');
+            }
+        
+            displayStations() {
+                if (!this.head) {
+                    console.log('No stations available.');
+                    return;
+                }
+                let current = this.head;
+                do {
+                    console.log(`Station: ${current.name}`);
+                    current = current.next;
+                } while (current !== this.head);
+            }
+        
+            simulateTrainMovement(iterations) {
+                if (!this.head) {
+                    console.log('No stations to simulate.');
+                    return;
+                }
+                let current = this.head;
+                for (let i = 0; i < iterations; i++) {
+                    console.log(`Train is at station: ${current.name}`);
+                    current = current.next;
+                }
             }
         }
-
-        // Book a specific seat
-        function bookSeat() {
-            const row = parseInt(document.getElementById("rowNumber").value) - 1;
-            const seat = parseInt(document.getElementById("seatNumber").value) - 1;
-            if (isNaN(row) || isNaN(seat) || row < 0 || row >= rows || seat < 0 || seat >= seatsPerRow) {
-                alert("Invalid seat position.");
-                return;
-            }
-            if (theater[row][seat] === 0) {
-                theater[row][seat] = 1;
-                displaySeating();
-                alert("Seat booked successfully!");
-            } else {
-                alert("This seat is already booked.");
-            }
-        }
-        // Cancel booking for a specific seat
-        function cancelBooking() {
-            const row = parseInt(document.getElementById("cancelRow").value) - 1;
-            const seat = parseInt(document.getElementById("cancelSeat").value) - 1;
-            if (isNaN(row) || isNaN(seat) || row < 0 || row >= rows || seat < 0 || seat >= seatsPerRow) {
-                alert("Invalid seat position.");
-                return;
-            }
-            if (theater[row][seat] === 1) {
-                theater[row][seat] = 0;
-                displaySeating();
-                alert("Booking cancelled.");
-            } else {
-                alert("This seat is already available.");
-            }
-        }
-        // Initial display of seating arrangement
-        displaySeating();
-    </script>
-</body>
+        
+        // Example usage
+        const trainSystem = new TrainSystem();
+        trainSystem.addStation('Station A');
+        trainSystem.addStation('Station B');
+        trainSystem.addStation('Station C');
+        trainSystem.addStation('Station D');
+        
+        trainSystem.displayStations();
+        
+        console.log('Simulating train movement:');
+        trainSystem.simulateTrainMovement(10);
+        
+        console.log('Removing Station B:');
+        trainSystem.removeStation('Station B');
+        
+        
+        </script>
+        
+    </body>
 </html>
