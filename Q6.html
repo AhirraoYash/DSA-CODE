@@ -1,0 +1,91 @@
+<html>
+    <body>
+        <script>
+            class MemoryBlock {
+    constructor(size, id) {
+    this.size = size; // Size of the memory block
+    this.id = id; // Unique ID for each block
+    this.next = null; // Pointer to the next block in the list
+    this.referenced = true; // Flag to check if the block is referenced
+  }
+}
+
+class MemoryManager {
+  constructor() {
+    this.head = null; // Start of the linked list of memory blocks
+    this.counter = 1; // Unique ID generator
+  }
+
+  // Allocate a new memory block
+  allocate(size) {
+    const block = new MemoryBlock(size, this.counter++);
+    block.next = this.head;
+    this.head = block;
+    console.log(`Allocated block ID: ${block.id}, Size: ${size}`);
+    return block;
+  }
+
+  // Deallocate a memory block by marking it as unreferenced
+  deallocate(block) {
+    block.referenced = false;
+    console.log(`Deallocated block ID: ${block.id}`);
+  }
+
+  // Simulate garbage collection
+  garbageCollect() {
+    console.log("Running garbage collection...");
+    let current = this.head;
+    let prev = null;
+
+    while (current) {
+      if (!current.referenced) {
+        // Unlink the unreferenced block
+        if (prev) {
+          prev.next = current.next;
+        } else {
+          this.head = current.next;
+        }
+        console.log(`Released block ID: ${current.id}`);
+      } else {
+        // Reset reference for next garbage collection
+        current.referenced = false;
+        prev = current;
+      }
+      current = current.next;
+    }
+  }
+
+  // Display current memory blocks
+  display() {
+    let current = this.head;
+    const blocks = [];
+    while (current) {
+      blocks.push(`ID: ${current.id}, Size: ${current.size}, Referenced: ${current.referenced}`);
+      current = current.next;
+    }
+    console.log("Memory Blocks:", blocks.join(" | "));
+  }
+}
+
+// Usage Example
+const memoryManager = new MemoryManager();
+
+// Allocating memory blocks
+const block1 = memoryManager.allocate(64);
+const block2 = memoryManager.allocate(128);
+const block3 = memoryManager.allocate(32);
+
+// Display current memory
+memoryManager.display();
+
+// Deallocating some blocks
+memoryManager.deallocate(block2);
+
+// Run garbage collection to release unreferenced blocks
+memoryManager.garbageCollect();
+
+// Display memory after garbage collection
+memoryManager.display();
+        </script>
+    </body>
+</html>
