@@ -1,0 +1,50 @@
+<html>
+    <body>
+        <script>
+            //Delete functioin not understand
+            class node{
+                constructor(data){
+                    this.data=data;
+                    this.next=null;
+                    this.prev=null;
+                }
+            }
+            class list{
+                constructor(){
+                    this.head=null;
+                }
+                add(data){
+                   
+                    let newlist=new node(data);
+                        if(this.head==null){
+                            this.head=newlist;
+                            this.head.next=this.head;
+                            this.head.prev=this.head;
+                            return;
+                        }
+                        let tail=this.head.prev;
+                         tail.next=newlist;
+                         newlist.prev=tail;
+                         newlist.next=this.head;
+                         this.head.prev=newlist;
+                }
+                display(){
+                    let current=this.head;
+                    do{
+                        console.log(current.data);
+                        current=current.next;
+                    }while(current!=this.head);
+                }
+                 
+            }
+            let obj=new list();
+            obj.add(10);
+             
+            obj.add(50);
+            obj.display();
+        </script>
+
+
+    </body>
+
+</html>
