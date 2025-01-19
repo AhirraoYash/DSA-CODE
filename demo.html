@@ -1,0 +1,68 @@
+<html>
+    <body>
+            <script>
+                class node{
+                    constructor(data){
+                        this.data=data;
+                        this.next=null;
+                    }
+                }
+                class LinkedList{
+                    constructor(){
+                        this.head=null;
+                    }
+                    add(data){
+                        let Node=new node(data);
+                        if(this.head==null){
+                            this.head=Node;
+                        }
+                        else{
+                            let curr=this.head;
+                            while(curr.next!=null){
+                                curr=curr.next;
+                            }
+                            curr.next=Node;
+                        }
+                
+                    }
+                    display(){
+                        if(this.head==null){
+                            console.log("List is empty");
+                            return;
+                        }
+                        else{
+                            let curr=this.head;
+                            while(curr!=null){
+                                console.log(curr.data);
+                                curr=curr.next;
+                            }
+                        }
+                    }
+                    delete(value){
+                        if(this.head==null){
+                            console.log("empty");
+                            return;
+                        }
+                        else{
+                            let prev=null;
+                            let curr=this.head;
+                            while(curr!=null && curr.data!=value){
+                                prev=curr;
+                                curr=curr.next;
+                            }
+                            console.log(`value of ${value} is deleted`);
+                            prev.next=curr.next;
+                        }
+                    }
+                }
+                let obj=new LinkedList();
+                obj.add(10);
+                obj.add(20);
+                obj.display();
+                obj.delete(20);
+                obj.display();
+                
+</script>
+             
+    </body>
+</html>
